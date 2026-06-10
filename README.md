@@ -62,9 +62,9 @@ You can spin up the entire ecosystem (Frontend, Backend, and Database) with a si
 ```
 
 2. Run the environment:
-
+```bash
 docker-compose up --build
-
+```
 3. Access the applications:
   - Frontend: http://localhost:3000
   - Backend API: http://localhost:8080
@@ -74,6 +74,6 @@ docker-compose up --build
 ## Testing
 
 To run the automated test suite and check code reliability, navigate to the backend directory and execute:
-
+```bash
 ./mvnw test
-
+```
