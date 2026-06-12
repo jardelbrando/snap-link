@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: snaplink_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: snaplink_db
+      POSTGRES_USER: snaplink_user
+      POSTGRES_PASSWORD: snaplink_password
+    ports:
+      - "5432:5432"
+    volumes:
+      # É AQUI QUE VOCÊ ESCOLHE ONDE SALVAR OS DADOS!
+      # Lado esquerdo: Caminho no seu PC | Lado direito: Caminho dentro do Docker
+      - "D:/docker:/var/lib/postgresql/data"
