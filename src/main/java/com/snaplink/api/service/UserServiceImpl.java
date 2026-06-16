@@ -4,7 +4,7 @@ import com.snaplink.api.domain.User;
 import com.snaplink.api.dto.request.UserCreateRequest;
 import com.snaplink.api.dto.response.UserResponse;
 import com.snaplink.api.exception.EmailAlreadyInUseException;
-import com.snaplink.api.exception.UserNotFoundException;
+import com.snaplink.api.exception.ResourceNotFoundException;
 import com.snaplink.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse search(UUID uuid) {
 
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return new UserResponse(
                 user.getId(),
@@ -60,6 +60,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User getFullUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }

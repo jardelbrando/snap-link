@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UrlResponse {
+public class UrlAnalyticsResponse {
 
-    private long id;
     private String originalUrl;
     private String shortCode;
+    private long totalClicks;
     private LocalDateTime createdAt;
 }

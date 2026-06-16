@@ -5,8 +5,7 @@ import com.snaplink.api.domain.Url;
 import com.snaplink.api.domain.User;
 import com.snaplink.api.dto.request.UrlShortenRequest;
 import com.snaplink.api.dto.response.UrlResponse;
-import com.snaplink.api.exception.UrlNotFoundException;
-import com.snaplink.api.exception.UserNotFoundException;
+import com.snaplink.api.exception.ResourceNotFoundException;
 import com.snaplink.api.repository.ClickLogRepository;
 import com.snaplink.api.repository.UrlRepository;
 import com.snaplink.api.repository.UserRepository;
@@ -33,7 +32,7 @@ public class UrlServiceImpl implements UrlService {
 
         if(request.getUserId() != null){
             user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> new UserNotFoundException("User not Found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("User not Found"));
         }
 
         Url url = Url.builder()
@@ -61,7 +60,7 @@ public class UrlServiceImpl implements UrlService {
     public String getOriginalUrl(String shortCode) {
 
         Url url = urlRepository.findByShortCode(shortCode)
-                .orElseThrow(() -> new UrlNotFoundException("Url not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Url not found"));
 
         ClickLog log = ClickLog.builder()
                 .url(url)
