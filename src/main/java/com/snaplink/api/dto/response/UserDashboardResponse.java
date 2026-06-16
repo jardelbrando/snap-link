@@ -5,16 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UrlResponse {
+public class UserDashboardResponse {
 
-    private long id;
-    private String originalUrl;
-    private String shortCode;
-    private LocalDateTime createdAt;
+    private long totalLinksCreated;
+    private long totalClicksAccumulated;
 }
