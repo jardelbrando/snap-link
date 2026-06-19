@@ -26,7 +26,7 @@ public class ClickLogServiceImpl implements ClickLogService {
     public UrlAnalyticsResponse getUrlMetrics(Long urlId, UUID userId) {
 
         Url url = urlRepository.findById(urlId)
-                .orElseThrow(() -> new ResourceNotFoundException("Url Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Url not found"));
 
         if (url.getUser() == null || !url.getUser().getId().equals(userId)) {
             throw new AccessDeniedException("You do not have permission to view the statistics for this link.");
