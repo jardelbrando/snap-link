@@ -6,6 +6,7 @@ import com.snaplink.api.domain.User;
 import com.snaplink.api.dto.request.UrlShortenRequest;
 import com.snaplink.api.dto.response.UrlResponse;
 import com.snaplink.api.exception.ResourceNotFoundException;
+import com.snaplink.api.exception.UserIdIsNullException;
 import com.snaplink.api.repository.ClickLogRepository;
 import com.snaplink.api.repository.UrlRepository;
 import com.snaplink.api.repository.UserRepository;
@@ -28,12 +29,13 @@ public class UrlServiceImpl implements UrlService {
     @Transactional
     public UrlResponse shortenUrl(UrlShortenRequest request) {
 
-        User user = null;
-
-        if(request.getUserId() != null){
-            user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not Found"));
+        if(request.getUserId() == null){
+            throw new UserIdIsNullException("User Id is null");
         }
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
 
         Url url = Url.builder()
                 .originalUrl(request.getOriginalUrl())
