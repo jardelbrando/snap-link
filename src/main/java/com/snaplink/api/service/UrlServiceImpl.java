@@ -6,7 +6,6 @@ import com.snaplink.api.domain.User;
 import com.snaplink.api.dto.request.UrlShortenRequest;
 import com.snaplink.api.dto.response.UrlResponse;
 import com.snaplink.api.exception.ResourceNotFoundException;
-import com.snaplink.api.exception.UserIdIsNullException;
 import com.snaplink.api.repository.ClickLogRepository;
 import com.snaplink.api.repository.UrlRepository;
 import com.snaplink.api.repository.UserRepository;
@@ -14,6 +13,8 @@ import com.snaplink.api.util.Base62Encoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,32 +30,18 @@ public class UrlServiceImpl implements UrlService {
     @Transactional
     public UrlResponse shortenUrl(UrlShortenRequest request) {
 
-        if(request.getUserId() == null){
-            throw new UserIdIsNullException("User Id is null");
-        }
-
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-
         Url url = Url.builder()
                 .originalUrl(request.getOriginalUrl())
-                .user(user)
+                .shortCode("TEMP")
+                .user(resolveUser(request.getUserId()))
                 .build();
 
-        url = urlRepository.save(url);
+        urlRepository.save(url);
 
         String shortCode = base62Encoder.encode(url.getId());
-
         url.setShortCode(shortCode);
-        Url savedUrl = urlRepository.save(url);
 
-        return new UrlResponse(
-                savedUrl.getId(),
-                savedUrl.getOriginalUrl(),
-                savedUrl.getShortCode(),
-                savedUrl.getCreatedAt()
-        );
+        return UrlResponse.fromEntity(url);
     }
 
     @Override
@@ -71,5 +58,13 @@ public class UrlServiceImpl implements UrlService {
         clickLogRepository.save(log);
 
         return url.getOriginalUrl();
+    }
+
+    private User resolveUser(UUID userId) {
+        if (userId == null) {
+            return null;
+        }
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
 }
