@@ -1,9 +1,11 @@
 package com.snaplink.api.exception;
 
+import com.snaplink.api.dto.ErrorDetailDTO;
 import com.snaplink.api.dto.response.StandardErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -70,5 +72,15 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        // Aqui você mapeia os erros de campo para devolver uma resposta amigável
+        var errors = ex.getFieldErrors().stream()
+                .map(error -> new ErrorDetailDTO(error.getField(), error.getDefaultMessage()))
+                .toList();
+
+        return ResponseEntity.badRequest().body(errors);
     }
 }

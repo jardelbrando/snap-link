@@ -24,13 +24,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse insert(UserCreateRequest userCreateRequest) {
 
-        if(userRepository.findByEmail(userCreateRequest.getEmail()).isPresent())
+        if(userRepository.findByEmail(userCreateRequest.email()).isPresent())
             throw new EmailAlreadyInUseException("The email address is already in use");
 
-        String hashedPassword = passwordEncoder.encode(userCreateRequest.getPassword());
+        String hashedPassword = passwordEncoder.encode(userCreateRequest.password());
 
         User user = User.builder()
-                .email(userCreateRequest.getEmail())
+                .email(userCreateRequest.email())
                 .password(hashedPassword)
                 .build();
 

@@ -44,8 +44,8 @@ class UserServiceImplTest {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(request.getPassword())).thenReturn("encryptedPassword");
+        when(userRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(request.password())).thenReturn("encryptedPassword");
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         UserResponse response = userService.insert(request);
@@ -54,7 +54,7 @@ class UserServiceImplTest {
         assertEquals(savedUser.getId(), response.getUserId());
         assertEquals("test@test.com", response.getEmail());
 
-        verify(userRepository, times(1)).findByEmail(request.getEmail());
+        verify(userRepository, times(1)).findByEmail(request.email());
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -64,7 +64,7 @@ class UserServiceImplTest {
         UserCreateRequest request = new UserCreateRequest("test@test.com","password123");
         User existingUser = new User();
 
-        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByEmail(request.email())).thenReturn(Optional.of(existingUser));
 
         assertThrows(EmailAlreadyInUseException.class, () ->
             userService.insert(request)
