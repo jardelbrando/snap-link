@@ -10,4 +10,6 @@ public interface ClickLogService {
     UrlAnalyticsResponse getUrlMetrics(Long urlId, UUID userId);
 
     UserDashboardResponse getUserDashboardMetrics(UUID userId);
+
+    void registerClickAndNotify(String shortCode);
 }

@@ -2,6 +2,7 @@ package com.snaplink.api.controller;
 
 import com.snaplink.api.dto.request.UrlShortenRequest;
 import com.snaplink.api.dto.response.UrlResponse;
+import com.snaplink.api.service.ClickLogService;
 import com.snaplink.api.service.UrlService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ public class UrlController {
 
     private final UrlService urlService;
 
+    private final ClickLogService clickLogService;
+
     @PostMapping
     public ResponseEntity<UrlResponse> shortenUrl(@RequestBody @Valid UrlShortenRequest request){
         UrlResponse response = urlService.shortenUrl(request);
@@ -26,6 +29,8 @@ public class UrlController {
 
     @GetMapping("/{shortCode}")
     public ResponseEntity<Void> redirectToOriginalUrl(@PathVariable String shortCode){
+
+        clickLogService.registerClickAndNotify(shortCode);
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
         if(!originalUrl.startsWith("http://") && !originalUrl.startsWith("https://")){
